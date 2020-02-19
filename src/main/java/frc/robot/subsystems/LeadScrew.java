@@ -32,6 +32,8 @@ public class LeadScrew extends SubsystemBase {
         screw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         screw.setSensorPhase(false);
         screw.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+        screw.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+        //screw.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
         screw.config_kP(0, Constants.kP);
         screw.config_kI(0, Constants.kI);
         screw.config_kD(0, Constants.kD);

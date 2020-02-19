@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.DriveTrain.DrivetrainSide;
+import frc.robot.subsystems.LeadScrew;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Switch;
 import option16.util.Limelight;
 
 /**
@@ -106,6 +109,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    double power1 = Robot.m_robotContainer.getTest2().getY();
+    Pivot.getInstance().pivot(power1);
+    double power2 = Robot.m_robotContainer.getTest2().getY();
+    LeadScrew.getInstance().spin(power2);
+    double power3 = Robot.m_robotContainer.getTest2().getX();
+    Switch.getInstance().move(power3);
   }
 
   @Override

@@ -30,13 +30,15 @@ public class Pivot extends SubsystemBase {
     public Pivot() {
         pivotMotor = new TalonSRX(6);
         pivotMotor.configFactoryDefault();
-        pivotMotor.setInverted(false);
+        pivotMotor.setInverted(true);
         pivotMotor.configPeakOutputReverse(-1);
         pivotMotor.configPeakOutputForward(1);
         pivotMotor.setNeutralMode(NeutralMode.Brake);
         pivotMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         pivotMotor.setSensorPhase(false);
         pivotMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+        pivotMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+        //pivotMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
         pivotMotor.config_kP(0, Constants.kP);
         pivotMotor.config_kI(0, Constants.kI);
         pivotMotor.config_kD(0, Constants.kD);
@@ -65,8 +67,6 @@ public class Pivot extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double power = Robot.m_robotContainer.getTest2().getY();
-        this.pivot(power);
         //setDefaultCommand(new RotatePivot());
         // This method will be called once per scheduler run
         //Pivot(Robot.m_robotContainer.getPivotJoy().getY());
