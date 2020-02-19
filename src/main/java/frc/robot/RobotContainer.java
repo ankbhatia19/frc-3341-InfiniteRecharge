@@ -29,12 +29,16 @@ public class RobotContainer {
 
   private Joystick leftJoy;
   private Joystick rightJoy;
+  private Joystick test1;
+  private Joystick test2;
 
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    test1 = new Joystick(0);
+    test2 = new Joystick(1);
     leftJoy = new Joystick(2);
     rightJoy = new Joystick(3);
     // Configure the button bindings
@@ -45,6 +49,12 @@ public class RobotContainer {
   }
   public Joystick getRightJoy(){
     return rightJoy;
+  }
+  public Joystick getTest1(){
+    return test1;
+  }
+  public Joystick getTest2(){
+    return test2;
   }
   /**
    * Use this method to define your button->command mappings.  Buttons can be created by

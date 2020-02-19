@@ -7,10 +7,11 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
+import frc.robot.Robot;
+import option16.util.Constants;
 
 
 public class Pivot extends SubsystemBase {
@@ -18,16 +19,28 @@ public class Pivot extends SubsystemBase {
      * Creates a new Pivot.
      */
     private static Pivot instance;
-    private final TalonSRX pivotMotor = new TalonSRX(6);
+    private final TalonSRX pivotMotor;
     // private final TalonSRX motorRight = new TalonSRX(3);
     public boolean lock = false;
-    // jiofjoerf
 
-    public void pivot(final double JOY) {
+    public void pivot(double JOY) {
         pivotMotor.set(ControlMode.PercentOutput, JOY);
 
     }
     public Pivot() {
+        pivotMotor = new TalonSRX(6);
+        pivotMotor.configFactoryDefault();
+        pivotMotor.setInverted(false);
+        pivotMotor.configPeakOutputReverse(-1);
+        pivotMotor.configPeakOutputForward(1);
+        pivotMotor.setNeutralMode(NeutralMode.Brake);
+        pivotMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+        pivotMotor.setSensorPhase(false);
+        pivotMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+        pivotMotor.config_kP(0, Constants.kP);
+        pivotMotor.config_kI(0, Constants.kI);
+        pivotMotor.config_kD(0, Constants.kD);
+        pivotMotor.config_kF(0, Constants.kF);
         // RotatePivot r = new RotatePivot();
     }
 
@@ -52,6 +65,8 @@ public class Pivot extends SubsystemBase {
 
     @Override
     public void periodic() {
+        double power = Robot.m_robotContainer.getTest2().getY();
+        this.pivot(power);
         //setDefaultCommand(new RotatePivot());
         // This method will be called once per scheduler run
         //Pivot(Robot.m_robotContainer.getPivotJoy().getY());

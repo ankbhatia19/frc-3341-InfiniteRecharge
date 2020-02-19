@@ -8,9 +8,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import option16.util.Constants;
 
 public class Switch extends SubsystemBase {
     /**
@@ -21,7 +24,18 @@ public class Switch extends SubsystemBase {
 
     public Switch() {
         balance = new TalonSRX(8);
-        //setDefaultCommand(new Translating());
+        balance.configFactoryDefault();
+        balance.setInverted(false);
+        balance.configPeakOutputReverse(-1);
+        balance.configPeakOutputForward(1);
+        balance.setNeutralMode(NeutralMode.Brake);
+        balance.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+        balance.setSensorPhase(false);
+
+        balance.config_kP(0, Constants.kP);
+        balance.config_kI(0, Constants.kI);
+        balance.config_kD(0, Constants.kD);
+        balance.config_kF(0, Constants.kF);
     }
 
     public static Switch getInstance(){
