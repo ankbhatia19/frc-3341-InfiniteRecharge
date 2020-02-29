@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
+import option16.util.Constants;
 
 /**
  * Add your docs here.
@@ -33,8 +35,7 @@ public class ColorSensor extends SubsystemBase {
     private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
     private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
     private final TalonSRX wheel = new TalonSRX(3);
-    //public Joystick joy = new Joystick(0);
-    //public JoystickButton button = new JoystickButton(joy, 1);
+
     private static ColorSensor instance;
 
 
@@ -48,9 +49,18 @@ public class ColorSensor extends SubsystemBase {
         m_colorMatcher.addColorMatch(kGreenTarget);
         m_colorMatcher.addColorMatch(kRedTarget);
         m_colorMatcher.addColorMatch(kYellowTarget);
+
         wheel.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1);
-        wheel.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        wheel.setSelectedSensorPosition(0);
+        wheel.configFactoryDefault();
+        wheel.setInverted(false);
+        wheel.configPeakOutputReverse(-1);
+        wheel.configPeakOutputForward(1);
+        wheel.setNeutralMode(NeutralMode.Brake);
+        wheel.config_kP(0, Constants.kP);
+        wheel.config_kI(0, Constants.kI);
+        wheel.config_kD(0, Constants.kD);
+        wheel.config_kF(0, Constants.kF);
+
         System.out.println("color sensor constructor");
     }
 
