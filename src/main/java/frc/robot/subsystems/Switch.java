@@ -12,7 +12,9 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import option16.util.Constants;
 
 public class Switch extends SubsystemBase {
@@ -51,6 +53,10 @@ public class Switch extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (DriverStation.getInstance().isOperatorControl()) {
+            double power = Robot.m_robotContainer.getMechOpLeft().getX();
+            this.move(power);
+        }
         // This method will be called once per scheduler run
     }
 

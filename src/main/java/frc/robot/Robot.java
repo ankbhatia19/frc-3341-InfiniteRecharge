@@ -38,6 +38,10 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    CommandScheduler.getInstance().registerSubsystem(DriveTrain.getInstance());
+    CommandScheduler.getInstance().registerSubsystem(LeadScrew.getInstance());
+    CommandScheduler.getInstance().registerSubsystem(Switch.getInstance());
+    CommandScheduler.getInstance().registerSubsystem(Pivot.getInstance());
 
   }
 
@@ -101,7 +105,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
 	}
-	CommandScheduler.getInstance().registerSubsystem(DriveTrain.getInstance());
+
   }
 
   /**
@@ -109,12 +113,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    double power1 = Robot.m_robotContainer.getTest2().getY();
-    Pivot.getInstance().pivot(power1);
-    double power2 = Robot.m_robotContainer.getTest2().getY();
-    LeadScrew.getInstance().spin(power2);
-    double power3 = Robot.m_robotContainer.getTest2().getX();
-    Switch.getInstance().move(power3);
   }
 
   @Override

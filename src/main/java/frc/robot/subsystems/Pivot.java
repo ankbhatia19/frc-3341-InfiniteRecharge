@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.Robot;
@@ -20,14 +21,20 @@ public class Pivot extends SubsystemBase {
      */
     private static Pivot instance;
     private final TalonSRX pivotMotor;
-    // private final TalonSRX motorRight = new TalonSRX(3);
-    public boolean lock = false;
+    private double positionLock = -1;
+
+    private double kP, kI, kD, kF;
 
     public void pivot(double JOY) {
         pivotMotor.set(ControlMode.PercentOutput, JOY);
 
     }
     public Pivot() {
+        kP = 1; //config this madness
+        kI = 0;
+        kD = 0;
+        kF = 20;
+
         pivotMotor = new TalonSRX(6);
         pivotMotor.configFactoryDefault();
         pivotMotor.setInverted(true);
@@ -39,10 +46,10 @@ public class Pivot extends SubsystemBase {
         pivotMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
         pivotMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
         //pivotMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
-        pivotMotor.config_kP(0, Constants.kP);
-        pivotMotor.config_kI(0, Constants.kI);
-        pivotMotor.config_kD(0, Constants.kD);
-        pivotMotor.config_kF(0, Constants.kF);
+        pivotMotor.config_kP(0, this.kP);
+        pivotMotor.config_kI(0, this.kI);
+        pivotMotor.config_kD(0, this.kD);
+        pivotMotor.config_kF(0, this.kF);
         // RotatePivot r = new RotatePivot();
     }
 
@@ -52,24 +59,18 @@ public class Pivot extends SubsystemBase {
         return instance;
     }
 
-    public void setLock(boolean lock) {
-        this.lock = lock;
-    }
-    public boolean getLock() {
-        return lock;
-    }
-    public boolean atTop() {
-        return pivotMotor.getSensorCollection().isRevLimitSwitchClosed();
-    }
-    public boolean atBottom() {
-        return pivotMotor.getSensorCollection().isFwdLimitSwitchClosed();
+    public void enablePositionLocking(){
+        if (positionLock == -1)
+            positionLock = pivotMotor.getSelectedSensorPosition(0);
+        pivotMotor.set(ControlMode.Position, positionLock);
     }
 
     @Override
     public void periodic() {
-        //setDefaultCommand(new RotatePivot());
-        // This method will be called once per scheduler run
-        //Pivot(Robot.m_robotContainer.getPivotJoy().getY());
+        if (DriverStation.getInstance().isOperatorControl()) {
+            double power = Robot.m_robotContainer.getMechOpLeft().getY();
+            this.pivot(power);
+        }
     }
     public TalonSRX getPivotTalon() {
         return pivotMotor;

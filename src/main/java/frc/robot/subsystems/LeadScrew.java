@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import option16.util.Constants;
@@ -19,7 +20,6 @@ public class LeadScrew extends SubsystemBase {
      * Creates a new leadScrew.
      */
     private TalonSRX screw;
-    public boolean lock = true;
     private static LeadScrew instance;
 
     public LeadScrew() {
@@ -50,23 +50,13 @@ public class LeadScrew extends SubsystemBase {
     public void spin(double speed){
         screw.set(ControlMode.PercentOutput,speed);
     }
-    public void setLock(boolean lock) {
-        this.lock = lock;
-    }
-    public boolean getLock() {
-        return lock;
-    }
-    public boolean atTop() {
-        return screw.getSensorCollection().isRevLimitSwitchClosed();
-    }
-    public boolean atBottom() {
-        return screw.getSensorCollection().isFwdLimitSwitchClosed();
-    }
 
     @Override
     public void periodic() {
-        double power = Robot.m_robotContainer.getTest1().getY();
-        this.spin(power);
+        if (DriverStation.getInstance().isOperatorControl()) {
+            double power = Robot.m_robotContainer.getMechOpRight().getY();
+            this.spin(power);
+        }
         //setDefaultCommand(new Screwing());
         // This method will be called once per scheduler run
     }
