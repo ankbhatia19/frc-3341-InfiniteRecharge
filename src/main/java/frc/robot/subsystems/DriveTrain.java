@@ -37,7 +37,7 @@ public class DriveTrain extends SubsystemBase {
   private double turn;
 
   public DriveTrain() {
-      left.configFactoryDefault();
+
       right.configFactoryDefault();
       leftFollow.configFactoryDefault();
       rightFollow.configFactoryDefault();
@@ -143,7 +143,8 @@ public class DriveTrain extends SubsystemBase {
 
   public void align(double turn) {
     this.turn = turn;
-  } 
+  }
+
   public WPI_TalonSRX getTalon(DrivetrainSide side){
     if (side.equals(DrivetrainSide.left)) {
       return left;
@@ -160,9 +161,10 @@ public class DriveTrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if (DriverStation.getInstance().isOperatorControl()) {
-      double left = -Robot.m_robotContainer.getLeftJoy().getY(), right = -Robot.m_robotContainer.getRightJoy().getY();
+      /*double left = -Robot.m_robotContainer.getLeftJoy().getY(), right = -Robot.m_robotContainer.getRightJoy().getY();
       tankDrive(left * Math.abs(left) + turn, right * Math.abs(right) - turn, false);
-      turn = 0;
+      turn = 0; */
+      tankDrive(Robot.m_robotContainer.getLeftJoy().getY(), Robot.m_robotContainer.getRightJoy().getY(), false);
     }
   }
 

@@ -14,12 +14,12 @@ public class Constants {
 
     //ALL UNITS ARE IN FEET
     public static double wheelRadius = 0.25;
-    public static double maxVelocity = 1.2;
-    public static double wheelBaseWidth = (double)20 / 12;
+    public static double maxVelocity = 2.6;
+    public static double wheelBaseWidth = 22.5 / (double)12;
     public static double kP = 0.25;
     public static double kI = 0.001;
     public static double kD = 20;
-    public static double kF = 1023.0 / 7200.0;
+    public static double kF = 0.1079;
 
     public static double kV = 1; //needs tuning
     public static int ticksPerRevolution = 4096;
