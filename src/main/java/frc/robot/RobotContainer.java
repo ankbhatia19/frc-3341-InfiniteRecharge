@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -22,6 +23,13 @@ import frc.robot.commands.Path2;
 import frc.robot.commands.Path3;
 import frc.robot.commands.Turn;
 
+import frc.robot.commands.ReverseTankDrive;
+import frc.robot.commands.TankDrive;
+import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.NavX;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -31,6 +39,7 @@ import frc.robot.commands.Turn;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+
 
   public final MoveAndAlignToBall moveAndAlignToBall = new MoveAndAlignToBall();
   public final AlignToBall alignToBall = new AlignToBall();
@@ -49,10 +58,17 @@ public class RobotContainer {
   public final Path3 path3 = new Path3();
 
 
+  public static DriveTrain drive;
+  public NavX navx = new NavX();
+
+  public JoystickButton reverseButton;
+
+
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
     mechOpLeft = new Joystick(0);
     mechOpRight = new Joystick(1);
     leftJoy = new Joystick(2);
@@ -77,7 +93,12 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     new JoystickButton(leftJoy, 3).whileHeld(alignToBall);
+
+    reverseButton = new JoystickButton(rightJoy, 2);
+    reverseButton.whenPressed(new ReverseTankDrive());
+
   }
 
   /**
@@ -87,6 +108,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+
     return moveAndAlignToBall;
   }
 

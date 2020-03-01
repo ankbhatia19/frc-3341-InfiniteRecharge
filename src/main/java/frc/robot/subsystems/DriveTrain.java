@@ -35,8 +35,10 @@ public class DriveTrain extends SubsystemBase {
 
   private DifferentialDrive drive;
   private double turn;
+  private boolean inverted = false;
 
-  public DriveTrain() {
+
+    public DriveTrain() {
 
       right.configFactoryDefault();
       leftFollow.configFactoryDefault();
@@ -172,6 +174,24 @@ public class DriveTrain extends SubsystemBase {
 	  drive.arcadeDrive(move, turn, squareInputs);
 	  leftFollow.set(ControlMode.Follower, 2);
 	  rightFollow.set(ControlMode.Follower, 3);
+  }
+
+  public void tankDrive(double leftpower, double rightpower){
+    //set left motor inverted
+    left.set(ControlMode.PercentOutput, leftpower);
+    right.set(ControlMode.PercentOutput, rightpower);
+    leftFollow.set(ControlMode.Follower, 2);
+    rightFollow.set(ControlMode.Follower, 3);
+  }
+
+  public void reverseMotors(){
+    inverted = !inverted;
+    left.setInverted(!left.getInverted());
+    right.setInverted(!right.getInverted());
+  }
+
+  public boolean isInverted() {
+    return inverted;
   }
 
 }
