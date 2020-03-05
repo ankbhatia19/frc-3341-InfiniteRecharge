@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.subsystems;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
@@ -28,15 +27,15 @@ public class BallScorer extends SubsystemBase {
     private Servo gate;
 
     private int numBalls = 3;
-    private double currentThreshold = 1.00; //amps
+    private double currentThreshold = 0; //amps
     private boolean acquiringBall = false;
 
     private static BallScorer instance;
 
-    public enum beltDirection {
-        UP(),
-        DOWN(),
-        STATIONARY();
+    public enum Direction {
+        UP,
+        DOWN,
+        STATIONARY;
     }
 
     public BallScorer() {
@@ -97,36 +96,45 @@ public class BallScorer extends SubsystemBase {
         return instance;
     }
 
-    public void beltSpin(beltDirection direction){
-        if (direction.equals(beltDirection.DOWN))
+    public void beltSpin(Direction direction){
+        if (direction.equals(Direction.DOWN))
             belt.set(ControlMode.PercentOutput, -0.5);
-        else if (direction.equals(beltDirection.UP))
+        else if (direction.equals(Direction.UP))
             belt.set(ControlMode.PercentOutput, 0.5);
-        else if (direction.equals(beltDirection.STATIONARY))
+        else if (direction.equals(Direction.STATIONARY))
             belt.set(ControlMode.PercentOutput, 0);
     }
 
-    public void depositBalls(boolean deposit){
-        if (deposit)
+    public void depositBalls(Direction dir){
+        if (dir.equals(Direction.UP))
             flywheelRight.set(ControlMode.PercentOutput, 1);
-        else
+        else if (dir.equals(Direction.DOWN))
+            flywheelRight.set(ControlMode.PercentOutput, -1);
+        else if (dir.equals(Direction.STATIONARY)){
             flywheelRight.set(ControlMode.PercentOutput, 0);
+        }
 
         numBalls = 0;
     }
 
-    public void acquireBalls(boolean acquire){
-        if (acquire)
+    public void acquireBalls(Direction dir){
+        if (dir.equals(Direction.UP)) {
             acquirer.set(ControlMode.PercentOutput, 0.5);
-        else
-            acquirer.set(ControlMode.PercentOutput, 0);
 
-        if (acquirer.getSupplyCurrent() > currentThreshold && !acquiringBall){
-            acquiringBall = true;
-            numBalls++;
+            if (acquirer.getSupplyCurrent() > currentThreshold && !acquiringBall){
+                acquiringBall = true;
+                numBalls++;
+            }
+            else if (acquirer.getSupplyCurrent() == currentThreshold)
+                acquiringBall = false;
         }
-        else
-            acquiringBall = false;
+        else if (dir.equals(Direction.DOWN))
+            acquirer.set(ControlMode.PercentOutput, -0.5);
+        else if (dir.equals(Direction.STATIONARY)){
+            acquirer.set(ControlMode.PercentOutput, 0);
+        }
+
+
     }
 
     public void gateSpin(double position) {
@@ -139,18 +147,37 @@ public class BallScorer extends SubsystemBase {
 
     @Override
     public void periodic() {
+        /*beltSpin(beltDirection.UP);
         if (DriverStation.getInstance().isOperatorControl()){
             acquireBalls(true);
-            beltSpin(beltDirection.UP);
             depositBalls(false);
         }
-        else if (DriverStation.getInstance().isTest()){
+        if (DriverStation.getInstance().isTest()){
             acquireBalls(false);
-            beltSpin(beltDirection.STATIONARY);
             depositBalls(true);
+        }*/
+        if (DriverStation.getInstance().isOperatorControl()) {
+            beltSpin(Direction.UP);
+            acquireBalls(Direction.UP);
+            depositBalls(Direction.UP);
+            /*if (acquiringBall){
+                System.out.println("Ball Current: " + acquirer.getSupplyCurrent());
+                long currentTime = System.currentTimeMillis();
+                System.out.println("Time remaining: " + (System.currentTimeMillis() - currentTime));
+                while (System.currentTimeMillis() - currentTime < 1000){
+                    System.out.println("moving balls downwards");
+                    acquireBalls(Direction.DOWN);
+                    beltSpin(Direction.DOWN);
+                    depositBalls(Direction.STATIONARY);
+                }
+            }*/
         }
-
-        System.out.println(numBalls);
+        else if (DriverStation.getInstance().isTest()){
+            beltSpin(Direction.DOWN);
+            acquireBalls(Direction.STATIONARY);
+            depositBalls(Direction.DOWN);
+        }
+        //System.out.println(numBalls);
         // This method will be called once per scheduler run
     }
 }

@@ -7,12 +7,10 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.util.Color;
@@ -28,19 +26,25 @@ public class ColorSensor extends SubsystemBase {
     // here. Call these from Commands.
     private final I2C.Port i2cPort;
     private final ColorSensorV3 m_colorSensor;
+
+    private colorWheelStatus status;
+
     Color detectedColor;
     private  ColorMatch m_colorMatcher;
     private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
     private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
     private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
     private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
-    private final TalonSRX wheel = new TalonSRX(3);
+    private final TalonSRX wheel;
+    private final TalonSRX pivot;
 
     private static ColorSensor instance;
 
 
-    public ColorSensor()
-    {
+    public ColorSensor() {
+        wheel = new TalonSRX(9);
+        pivot = new TalonSRX(11);
+
         i2cPort = I2C.Port.kOnboard;
         m_colorSensor = new ColorSensorV3(i2cPort);
         detectedColor  = null;
@@ -61,6 +65,20 @@ public class ColorSensor extends SubsystemBase {
         wheel.config_kD(0, Constants.kD);
         wheel.config_kF(0, Constants.kF);
 
+        pivot.configFactoryDefault();
+        pivot.setInverted(true);
+        pivot.configPeakOutputReverse(-1);
+        pivot.configPeakOutputForward(1);
+        pivot.setNeutralMode(NeutralMode.Brake);
+        pivot.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+        pivot.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+        //screw.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+        pivot.config_kP(0, Constants.kP);
+        pivot.config_kI(0, Constants.kI);
+        pivot.config_kD(0, Constants.kD);
+        pivot.config_kF(0, Constants.kF);
+
+        status = colorWheelStatus.DOWN;
         System.out.println("color sensor constructor");
     }
 
@@ -69,6 +87,10 @@ public class ColorSensor extends SubsystemBase {
             instance = new ColorSensor();
         }
         return instance;
+    }
+
+    public enum colorWheelStatus{
+        UP(), DOWN();
     }
 
     public String printColors(){ //don't need to know if sensing RGB
@@ -104,6 +126,12 @@ public class ColorSensor extends SubsystemBase {
     return colorString;*/
     }
 
+    public void moveColorWheelPivot(colorWheelStatus status){
+        if (status.equals(colorWheelStatus.UP))
+            pivot.set(ControlMode.PercentOutput, 0.5);
+        else if (status.equals(colorWheelStatus.DOWN))
+            pivot.set(ControlMode.PercentOutput, -0.5);
+    }
 
     public double velocity(){
 
@@ -162,7 +190,12 @@ public class ColorSensor extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         // wheel.set(ControlMode.PercentOutput, 0.4);
-
+        /*if (DriverStation.getInstance().isOperatorControl()){
+            moveColorWheelPivot(colorWheelStatus.UP);
+        }
+        else if (DriverStation.getInstance().isTest()) {
+            moveColorWheelPivot(colorWheelStatus.DOWN);
+        }*/
     }
 
 

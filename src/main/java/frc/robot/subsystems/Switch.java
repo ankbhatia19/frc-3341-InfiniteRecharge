@@ -55,7 +55,7 @@ public class Switch extends SubsystemBase {
     public void periodic() {
         if (DriverStation.getInstance().isOperatorControl()) {
             double power = Robot.m_robotContainer.getMechOpLeft().getX();
-            this.move(power);
+            //this.move(power);
         }
         // This method will be called once per scheduler run
     }

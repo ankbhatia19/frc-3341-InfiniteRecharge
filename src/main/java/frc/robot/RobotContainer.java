@@ -15,16 +15,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.AlignToBall;
-import frc.robot.commands.Move;
-import frc.robot.commands.MoveAndAlignToBall;
-import frc.robot.commands.Path1;
-import frc.robot.commands.Path2;
-import frc.robot.commands.Path3;
-import frc.robot.commands.Turn;
 
-import frc.robot.commands.ReverseTankDrive;
-import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.NavX;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,10 +32,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
 
-  public final MoveAndAlignToBall moveAndAlignToBall = new MoveAndAlignToBall();
-  public final AlignToBall alignToBall = new AlignToBall();
-  public final Turn turn = new Turn(90);
-  public final Move move = new Move(10000);
+
 
   private NetworkTableEntry delay = Shuffleboard.getTab("SmartDashboard").add("delay", 5).getEntry();
 
@@ -53,9 +41,6 @@ public class RobotContainer {
   private Joystick mechOpLeft;
   private Joystick mechOpRight;
 
-  public final Path1 path1 = new Path1();
-  public final Path2 path2 = new Path2(delay);
-  public final Path3 path3 = new Path3();
 
 
   public static DriveTrain drive;
@@ -94,10 +79,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    new JoystickButton(leftJoy, 3).whileHeld(alignToBall);
 
-    reverseButton = new JoystickButton(rightJoy, 2);
-    reverseButton.whenPressed(new ReverseTankDrive());
 
   }
 
@@ -109,7 +91,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
 
-    return moveAndAlignToBall;
+  return null;
   }
 
   public boolean leftGetRawButton(int n) {

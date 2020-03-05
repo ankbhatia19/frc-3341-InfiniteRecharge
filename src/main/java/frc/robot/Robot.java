@@ -11,12 +11,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.*;
 
 import frc.robot.subsystems.DriveTrain.DrivetrainSide;
-import frc.robot.subsystems.LeadScrew;
-import frc.robot.subsystems.Pivot;
-import frc.robot.subsystems.Switch;
 import option16.util.Limelight;
 
 /**
@@ -44,6 +41,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().registerSubsystem(LeadScrew.getInstance());
     CommandScheduler.getInstance().registerSubsystem(Switch.getInstance());
     CommandScheduler.getInstance().registerSubsystem(Pivot.getInstance());
+    CommandScheduler.getInstance().registerSubsystem(BallScorer.getInstance());
+    CommandScheduler.getInstance().registerSubsystem(ColorSensor.getInstance());
 
     Limelight.setPipeline(3);
 

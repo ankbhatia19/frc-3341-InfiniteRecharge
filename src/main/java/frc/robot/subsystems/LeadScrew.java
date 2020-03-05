@@ -55,7 +55,8 @@ public class LeadScrew extends SubsystemBase {
     public void periodic() {
         if (DriverStation.getInstance().isOperatorControl()) {
             double power = Robot.m_robotContainer.getMechOpRight().getY();
-            this.spin(power);
+            spin(power);
+            //System.out.println("Current: " + screw.getSupplyCurrent());
         }
         //setDefaultCommand(new Screwing());
         // This method will be called once per scheduler run

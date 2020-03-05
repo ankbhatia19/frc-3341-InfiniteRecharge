@@ -69,7 +69,7 @@ public class Pivot extends SubsystemBase {
     public void periodic() {
         if (DriverStation.getInstance().isOperatorControl()) {
             double power = Robot.m_robotContainer.getMechOpLeft().getY();
-            this.pivot(power);
+            pivot(power);
         }
     }
     public TalonSRX getPivotTalon() {
